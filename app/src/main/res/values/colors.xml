@@ -7,4 +7,11 @@
     //login
     <color name="login_text_color">#ffffff</color>
     <color name="login_input_layout_background_color">#ffffff</color>
+    <color name="login_button_text_color">#ffffff</color>
+
+    //home
+    <color name="home_page_selected_text_color">#F34545</color>
+    <color name="home_page_normal_text_color">#6A6766</color>
+
+    <color name="status_color" >#F5F5F5</color>
 </resources>

@@ -2,5 +2,11 @@
     <string name="app_name">BananaRecharge</string>
     <!-- Strings related to login -->
     <string name="prompt_login">Login</string>
+    <string name="vertification_code">Get code</string>
+    <string name="hint_vertification_code">Enter confirmation code</string>
+    <string name="hint_phone_code">Enter phone code</string>
 
+    <!--home page-->
+    <string name="home_page">Home</string>
+    <string name="order_page">Order</string>
 </resources>

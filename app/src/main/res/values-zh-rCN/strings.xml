@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">香蕉充值</string>
+    <!-- Strings related to login -->
+    <string name="prompt_login">登录</string>
+    <string name="vertification_code">获取验证码</string>
+    <string name="hint_vertification_code">输入验证码</string>
+    <string name="hint_phone_code">输入手机号码</string>
+
+    <!--home page-->
+    <string name="home_page">首页</string>
+    <string name="order_page">订单</string>
+</resources>

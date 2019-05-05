@@ -4,42 +4,115 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/background_login"
+    android:orientation="vertical"
     tools:context="com.ape.bananarecharge.Login.LoginActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/prompt_login"
-        android:textSize="@dimen/login_text"
         android:layout_marginTop="@dimen/login_text_margin_top"
+        android:gravity="center_horizontal"
+        android:text="@string/prompt_login"
         android:textColor="@color/login_text_color"
-        android:gravity="center_horizontal"/>
+        android:textSize="@dimen/login_text_height" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/login_input_layout_margin_top"
-        android:layout_marginBottom="@dimen/login_input_layout_margin_bottom"
-        android:layout_marginRight="@dimen/login_input_layout_margin_end"
         android:layout_marginLeft="@dimen/login_input_layout_margin_start"
+        android:layout_marginTop="@dimen/login_input_layout_margin_top"
+        android:layout_marginRight="@dimen/login_input_layout_margin_end"
+        android:layout_marginBottom="@dimen/login_input_layout_margin_bottom"
         android:background="@drawable/login_input_layout_background"
         android:orientation="vertical">
 
-        <AutoCompleteTextView
+        <LinearLayout
+            android:id="@+id/usrName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="@dimen/login_edit_layout_height"
+            android:layout_marginLeft="@dimen/login_edit_layout_margin_edge"
+            android:layout_marginTop="@dimen/login_edit_layout_margin_parent_top"
+            android:layout_marginRight="@dimen/login_edit_layout_margin_edge"
+            android:background="@drawable/edit_layout_bacground"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/login_edit_layout_margin_edge"
+                android:layout_weight="1.5">
+
+                <Spinner
+                    android:id="@+id/country_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:entries="@array/cities_data"
+                    android:spinnerMode="dialog" />
+            </LinearLayout>
+
+            <AutoCompleteTextView
+                android:id="@+id/phone_num"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/login_edit_layout_margin_edge"
+                android:layout_weight="3"
+                android:background="@null"
+                android:hint="@string/hint_phone_code"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/verification_code_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_edit_layout_height"
+            android:layout_below="@id/usrName"
+            android:layout_marginLeft="@dimen/login_edit_layout_margin_edge"
+            android:layout_marginTop="@dimen/login_edit_layout_margin_sub_top"
+            android:layout_marginRight="@dimen/login_edit_layout_margin_edge"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/edit_layout_bacground">
+
+                <EditText
+                    android:id="@+id/verificationCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/login_edit_layout_margin_edge"
+                    android:background="@null"
+                    android:hint="@string/hint_vertification_code"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/verificationCodeBtn"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/login_edit_layout_height"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1.2"
+                android:background="@drawable/edit_layout_bacground"
+                android:singleLine="true"
+                android:text="@string/vertification_code"
+                android:textColor="#F34545" />
+
+        </LinearLayout>
 
         <Button
+            android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/login_buttton_height"
+            android:layout_below="@id/verification_code_layout"
             android:layout_marginLeft="@dimen/login_button_margin_left"
+            android:layout_marginTop="@dimen/login_button_margin_top"
             android:layout_marginRight="@dimen/login_button_margin_right"
             android:background="@drawable/login_button_background"
-            android:layout_alignParentBottom="true"/>
-
+            android:text="@string/prompt_login"
+            android:textColor="@color/login_button_text_color" />
     </RelativeLayout>
-
-
 </LinearLayout>
