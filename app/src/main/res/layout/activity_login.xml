@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_login"
+    tools:context="com.ape.bananarecharge.Login.LoginActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/prompt_login"
+        android:textSize="@dimen/login_text"
+        android:layout_marginTop="@dimen/login_text_margin_top"
+        android:textColor="@color/login_text_color"
+        android:gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/login_input_layout_margin_top"
+        android:layout_marginBottom="@dimen/login_input_layout_margin_bottom"
+        android:layout_marginRight="@dimen/login_input_layout_margin_end"
+        android:layout_marginLeft="@dimen/login_input_layout_margin_start"
+        android:background="@drawable/login_input_layout_background"
+        android:orientation="vertical">
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/login_buttton_height"
+            android:layout_marginLeft="@dimen/login_button_margin_left"
+            android:layout_marginRight="@dimen/login_button_margin_right"
+            android:background="@drawable/login_button_background"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
