@@ -1,6 +1,7 @@
 package com.ape.bananarecharge;
 
 import android.annotation.SuppressLint;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -13,14 +14,17 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ape.bananarecharge.Adapter.GridAdapter;
 import com.ape.bananarecharge.Adapter.MyFragmentAdapter;
+import com.ape.bananarecharge.Controller.GoodsManager;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.Fragment.HomePageFragment;
 import com.ape.bananarecharge.Fragment.OrderFragment;
 import com.ape.bananarecharge.Login.LoginActivity;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,15 +44,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView mHomeText;
     private TextView mOrderText;
     private TextView mTitle;
+    private Map<String, String> mMap;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
+        Fresco.initialize(this);
         setContentView(R.layout.activity_main);
         initTabBar();
         initViewPager();
+        initData();
     }
 
     private void initViewPager() {
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(0);
         setTabImageColor(0);
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
+        mMap = new HashMap<>();
     }
 
     private void initTabBar() {
@@ -78,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         mOrder.setOnClickListener(listener);
     }
 
+    private void initData() {
+        GoodsManager manager = new GoodsManager(this);
+        manager.doPostRequest(new HashMap<String, String>(), URLUtils.GOODS_LIST);
+    }
+
     View.OnClickListener listener = new View.OnClickListener() {
         @SuppressLint("ResourceAsColor")
         @Override
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.order_layout:
                     mViewPager.setCurrentItem(1);
-                   setTabImageColor(1);
+                    setTabImageColor(1);
                     break;
             }
         }
