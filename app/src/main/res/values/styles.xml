@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/status_color</item>
         <item name="colorPrimaryDark">@color/status_color</item>
-        <item name="colorAccent">@color/home_page_selected_text_color</item>
+        <item name="colorAccent">@color/main_theme_color</item>
         <item name="windowNoTitle">true</item>
     </style>
 

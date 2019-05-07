@@ -24,6 +24,8 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import Util.Utils;
+
 /**
  * Created by xiaoyue.wang on 2019/4/30.
  */
@@ -33,19 +35,10 @@ public class UsrMananger {
     private static final String USRINFO_TABLE = "usrInfo";
     private UsrInfo mUsrInfo;
     private Context mContext;
-    private static Gson gson;
 
     public UsrMananger(Context context) {
         mUsrInfo = new UsrInfo(context);
         mContext = context;
-        gson = new Gson();
-    }
-
-    public void Login(Context context) {
-        UsrInfo usrInfo = new UsrInfo(context);
-        if (usrInfo.isHasLogin()) {
-
-        }
     }
 
     public UsrInfo parseUsrInfoData(String data) {
@@ -62,7 +55,7 @@ public class UsrMananger {
     private void saveUsrInfo(Context context, UsrInfo usrInfo) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("usrinfo", Object2String(usrInfo));
+        editor.putString("usrinfo", Utils.Object2String(usrInfo, TAG));
         editor.apply();
     }
 
@@ -73,42 +66,11 @@ public class UsrMananger {
             return null;
         }
 
-//        Type type = new TypeToken<UsrInfo>() {
-//        }.getType();
-
-        return (UsrInfo) String2Object(info);
+        return (UsrInfo) Utils.String2Object(info);
     }
 
-    private static String Object2String(Object object) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
-        try {
-            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(object);
-            String string = new String(Base64.encode(byteArrayOutputStream.toByteArray(), Base64.DEFAULT));
-            objectOutputStream.close();
-            return string;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    private static Object String2Object(String objectString) {
-        byte[] mobileBytes = Base64.decode(objectString.getBytes(), Base64.DEFAULT);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(mobileBytes);
-        ObjectInputStream objectInputStream = null;
-        try {
-            objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            Object object = objectInputStream.readObject();
-            objectInputStream.close();
-            return object;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
 
-    }
 
     private void setUserInfo(JSONObject object) {
         try {

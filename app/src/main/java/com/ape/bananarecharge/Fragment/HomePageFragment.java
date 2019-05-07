@@ -33,10 +33,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import Util.URLUtils;
+import Util.Utils;
 
 public class HomePageFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "HomePageFragment";
     private static final String GOODS_INFO = "goods_info";
+    private static final String INFO_LIST = "info_list";
     private Context mContext;
     private GridView mGridView;
     private GridAdapter mAdapter;
@@ -69,7 +71,13 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
                 }
             }
         }
-
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
+        String str = sharedPreferences.getString(INFO_LIST, null);
+        mGoodsInfoList = (ArrayList<GoodsInfo>) Utils.String2Object(str);
+        if (mGoodsInfoList != null) {
+            mAdapter = new GridAdapter(mContext, mGoodsInfoList);
+            mGridView.setAdapter(mAdapter);
+        }
         return view;
     }
 
@@ -123,10 +131,14 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
-
             mGoodsInfoList = (ArrayList<GoodsInfo>) bundle.getSerializable("list");
             mAdapter = new GridAdapter(mContext, mGoodsInfoList);
             mGridView.setAdapter(mAdapter);
+
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(INFO_LIST, Utils.Object2String(mGoodsInfoList, TAG));
+            editor.apply();
 
             Log.i("GoodsManager", "mGoodsInfoList : " + mGoodsInfoList);
             if (mGoodsInfoList != null) {

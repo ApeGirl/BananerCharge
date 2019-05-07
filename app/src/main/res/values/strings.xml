@@ -9,4 +9,20 @@
     <!--home page-->
     <string name="home_page">Home</string>
     <string name="order_page">Order</string>
+    
+    <!--order-->
+    <string name="order_goods_count">counts : </string>
+    <string name="order_time">buy time :  </string>
+    <string name="oder_trade_num">trade number :  </string>
+    <string name="oder_card_code">card code :  </string>
+    <string name="oder_web_address">web address :  </string>
+    <string name="order_copy">copy</string>
+    <string name="order_click_buy">click to buy</string>
+
+    <string name="goods_info_edittext_hint">Enter recharge account</string>
+    <string name="charge_account">Account recharge</string>
+    <string name="buy_count">Purchase quantity</string>
+    <string name="redemption_process">Redemption process</string>
+    <string name="direct_buy">Direct purchase</string>
+    <string name="share_buy">Purchase sfter share</string>
 </resources>

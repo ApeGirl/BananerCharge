@@ -10,4 +10,20 @@
     <!--home page-->
     <string name="home_page">首页</string>
     <string name="order_page">订单</string>
+
+    <!--order-->
+    <string name="order_goods_count">数量 : </string>
+    <string name="order_time">购买时间 :  </string>
+    <string name="oder_trade_num">订单号 :  </string>
+    <string name="oder_card_code">卡密 :  </string>
+    <string name="oder_web_address">充值地址 :  </string>
+    <string name="order_copy">复制</string>
+    <string name="order_click_buy">点击充值</string>
+
+    <string name="charge_account">充值账号</string>
+    <string name="buy_count">购买数量</string>
+    <string name="redemption_process">兑换流程</string>
+    <string name="direct_buy">直接购买</string>
+    <string name="share_buy">分享后购买</string>
+    <string name="goods_info_edittext_hint">输入充值账号</string>
 </resources>

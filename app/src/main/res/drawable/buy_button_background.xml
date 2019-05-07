@@ -4,7 +4,7 @@
 
     <corners android:radius="@dimen/login_button_radius" />
     <gradient
-        android:endColor="#F87C65"
-        android:startColor="#F34545" />
+        android:endColor="@color/end_color"
+        android:startColor="@color/main_theme_color" />
 
 </shape>

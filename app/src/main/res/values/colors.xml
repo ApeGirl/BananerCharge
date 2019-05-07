@@ -10,8 +10,20 @@
     <color name="login_button_text_color">#ffffff</color>
 
     //home
-    <color name="home_page_selected_text_color">#F34545</color>
     <color name="home_page_normal_text_color">#6A6766</color>
 
-    <color name="status_color" >#F5F5F5</color>
+    <color name="status_color">#F5F5F5</color>
+
+    <color name="main_theme_color">#F34545</color>
+    <color name="end_color">#F87C65</color>
+    <color name="step_line_color">#FFD4D4</color>
+
+    <color name="title_text_color">#0D0D0D</color>
+    <color name="order_goods_sub_text_color">#7D7D7D</color>
+    <color name="order_goods_info_text_color">#000000</color>
+
+    <color name="main_color_blue">#278EFF</color>
+    <color name="end_color_blue">#6DC0FF</color>
+
+    <color name="goods_info_title_text_color">#ffffff</color>
 </resources>

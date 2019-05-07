@@ -31,4 +31,19 @@
 
     <dimen name="gridview_item_height">250dp</dimen>
     <dimen name="gridview_item_radius">54dp</dimen>
+
+    <dimen name="cardview_margin_edge">10dp</dimen>
+    <dimen name="order_title_layout_margin_edge">12dp</dimen>
+    <dimen name="order_goods_title_text_size">14dp</dimen>
+    <dimen name="order_goods_sub_title_text_size">12dp</dimen>
+
+    <dimen name="goods_info_margin_edge">15dp</dimen>
+    <dimen name="goods_main_text_size">16dp</dimen>
+    <dimen name="goods_sub_text_size">14dp</dimen>
+    <dimen name="goods_info_step_text_margin_size">18dp</dimen>
+    <dimen name="step_pic_margin">22dp</dimen>
+    <dimen name="step_line_margintop">3dp</dimen>
+    <dimen name="step_line_marginleft">8dp</dimen>
+    <dimen name="step_line_width">2dp</dimen>
+
 </resources>

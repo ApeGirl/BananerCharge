@@ -6,13 +6,14 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
 /**
  * Created by xiaoyue.wang on 2019/4/30.
  */
 
-public class UsrInfo {
+public class UsrInfo implements Serializable{
     private static final String USRINFO_TABLE = "usrInfo";
 
     private SharedPreferences mSharedPreferences;

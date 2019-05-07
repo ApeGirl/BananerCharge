@@ -74,9 +74,9 @@ public class LoginActivity extends AppCompatActivity {
                     mUsrInfoMap.put("phone", mPhoneNum.getText().toString());
                     mUsrInfoMap.put("code", mVertificationCode.getText().toString());
                     mGoodsManager.doPostRequest(mUsrInfoMap, URLUtils.LOGIN_URL, URLUtils.RequestType.LOGIN);
+                    finish();
                     break;
             }
         }
     };
-
 }
