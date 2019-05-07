@@ -3,58 +3,69 @@ package com.ape.bananarecharge.Datamodel;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+
 /**
  * Created by xiaoyue.wang on 2019/4/30.
  */
 
 public class UsrInfo {
     private static final String USRINFO_TABLE = "usrInfo";
-    private static final String USR_NAME = "usrName";
-    private static final String USR_PSW = "usrPsw";
 
     private SharedPreferences mSharedPreferences;
     private Context mContext;
+    private String mUseName;
+    private String mPsw;
 
     public UsrInfo(Context context) {
         mContext = context;
-        mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE,Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
     }
 
-    public void setUsrName(Context context, String usrName) {
-        setUsrInfo(context, USR_NAME, usrName);
+    public String getmUseName() {
+        return mUseName;
     }
 
-    public void setUsrPsw(Context context, String psw) {
-        setUsrInfo(context, USR_PSW, psw);
+    public void setmUseName(String mUseName) {
+        this.mUseName = mUseName;
     }
 
-    public String getUsrName(Context context) {
-        return getUsrInfo(context, USR_NAME);
+    public String getmPsw() {
+        return mPsw;
     }
 
-    public String getUsrPsw(Context context) {
-        return getUsrInfo(context, USR_PSW);
+    public void setmPsw(String mPsw) {
+        this.mPsw = mPsw;
     }
 
-    private void setUsrInfo(Context context, String key, String value) {
+    public void setUsrInfo(Context context, UsrInfo usrInfo) {
         if (mSharedPreferences == null) {
-            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE,Context.MODE_PRIVATE);
+            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
         }
+        Gson gson = new Gson();
+        String json = gson.toJson(usrInfo);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(key, value);
+        editor.putString("usrinfo", json);
         editor.apply();
     }
 
-    private String getUsrInfo(Context context, String key) {
-        String usrInfo;
+    public UsrInfo getUsrInfo(Context context) {
+        UsrInfo usrInfo;
         if (mSharedPreferences == null) {
-            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE,Context.MODE_PRIVATE);
+            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
         }
-        usrInfo = mSharedPreferences.getString(key, null);
+        String json = mSharedPreferences.getString("usrinfo", null);
+        Gson gson = new Gson();
+        Type type = new TypeToken<UsrInfo>() {
+        }.getType();
+        usrInfo = gson.fromJson(json, type);
         return usrInfo;
     }
 
     public boolean isHasLogin() {
-        return (getUsrName(mContext) != null) && (getUsrPsw(mContext) != null);
+        return false;
     }
 }

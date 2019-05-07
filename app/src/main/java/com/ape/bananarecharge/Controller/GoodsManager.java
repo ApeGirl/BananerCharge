@@ -3,12 +3,15 @@ package com.ape.bananarecharge.Controller;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.OkHttpClientInstance;
 
 import org.json.JSONArray;
@@ -78,7 +81,7 @@ public class GoodsManager {
         return result;
     }
 
-    public void doPostRequest(Map<String, String> map, String url) {
+    public void doPostRequest(Map<String, String> map, String url, final URLUtils.RequestType type) {
         String skey = map.keySet().toString();
         String sValue = map.values().toString();
         String key[] = skey.substring(1, skey.length() - 1).split(",");
@@ -109,23 +112,32 @@ public class GoodsManager {
                 Log.d(TAG, "onResponse: " + mRequestBody + "    msg : " + msg + "    data : " + data);
 
                 if (msg.equals("success")) {
-                    mGoodsList = parseData(data);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("list", mGoodsList);
-                    Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
-                    intent.putExtras(bundle);
-                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
-                    localBroadcastManager.sendBroadcast(intent);
-
-                    Log.i(TAG, "mGoodsList : " + mGoodsList);
+                    responseDeal(data, type);
                 }
             }
         });
     }
 
-    public ArrayList<GoodsInfo> getGoodsList() {
-        Log.i(TAG, "mGoodsList 2 : " + mGoodsList);
-        return mGoodsList;
+    private void responseDeal(String data, URLUtils.RequestType type) {
+        switch (type) {
+            case LOGIN:
+                UsrInfo usrInfo = new UsrInfo(mContext);
+                break;
+            case GOODS_LIST:
+                mGoodsList = parseData(data);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("list", mGoodsList);
+                Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
+                intent.putExtras(bundle);
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+                localBroadcastManager.sendBroadcast(intent);
+
+                Log.i(TAG, "mGoodsList : " + mGoodsList);
+                break;
+            case GOODS_INFO:
+                break;
+
+        }
     }
 
     private ArrayList<GoodsInfo> parseData(String data) {

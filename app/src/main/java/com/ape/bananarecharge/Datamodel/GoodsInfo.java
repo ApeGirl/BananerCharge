@@ -3,7 +3,9 @@ package com.ape.bananarecharge.Datamodel;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
-public class GoodsInfo {
+import java.io.Serializable;
+
+public class GoodsInfo implements Serializable {
     private int goddsid;
     private String title;
     private String picUrl;

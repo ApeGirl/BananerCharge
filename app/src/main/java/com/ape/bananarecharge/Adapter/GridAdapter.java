@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.R;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,7 +90,7 @@ public class GridAdapter extends BaseAdapter {
 
     class ViewHolder {
         public TextView goodsTitle;
-        public ImageView goodsPicture;
+        public SimpleDraweeView goodsPicture;
     }
 
 

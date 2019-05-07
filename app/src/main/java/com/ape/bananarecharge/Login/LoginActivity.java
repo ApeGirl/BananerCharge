@@ -66,13 +66,13 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.verificationCodeBtn:
                     mUsrInfoMap.clear();
                     mUsrInfoMap.put("phone", mPhoneNum.getText().toString());
-                    mGoodsManager.doPostRequest(mUsrInfoMap, URLUtils.GET_VERTIFICATION_CODE);
+                    mGoodsManager.doPostRequest(mUsrInfoMap, URLUtils.GET_VERTIFICATION_CODE, URLUtils.RequestType.SEND_CODE);
                     break;
                 case R.id.login_btn:
                     mUsrInfoMap.clear();
                     mUsrInfoMap.put("phone", mPhoneNum.getText().toString());
                     mUsrInfoMap.put("code", mVertificationCode.getText().toString());
-                    mGoodsManager.doPostRequest(mUsrInfoMap, URLUtils.LOGIN_URL);
+                    mGoodsManager.doPostRequest(mUsrInfoMap, URLUtils.LOGIN_URL, URLUtils.RequestType.LOGIN);
                     break;
             }
         }

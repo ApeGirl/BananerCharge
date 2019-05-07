@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,25 +13,30 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 
 import com.ape.bananarecharge.Adapter.GridAdapter;
 import com.ape.bananarecharge.Controller.GoodsManager;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.GoodsDetailActivity;
 import com.ape.bananarecharge.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import Util.URLUtils;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "HomePageFragment";
+    private static final String GOODS_INFO = "goods_info";
     private Context mContext;
     private GridView mGridView;
     private GridAdapter mAdapter;
@@ -86,16 +93,14 @@ public class HomePageFragment extends Fragment {
         mGoodsInfoList = new ArrayList<>();
         mGridView = view.findViewById(R.id.home_page_grid);
         mGoodsManager = new GoodsManager(mContext);
-//        mGoodsInfoList = mGoodsManager.getGoodsList();
-//        mAdapter = new GridAdapter(mContext, mGoodsInfoList);
         mProgressBar =view.findViewById(R.id.progress);
-
-//        mGridView.setAdapter(mAdapter);
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext) ;
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
         mReceiver = new RequestSuccessReceiver();
         mLocalBroadcastManager.registerReceiver( mReceiver , intentFilter );
+
+        mGridView.setOnItemClickListener(this);
     }
 
     @Override
@@ -104,6 +109,13 @@ public class HomePageFragment extends Fragment {
         if (mLocalBroadcastManager != null) {
             mLocalBroadcastManager.unregisterReceiver(mReceiver);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(mContext, GoodsDetailActivity.class);
+        intent.putExtra("goodsInfo", mGoodsInfoList.get(position));
+        mContext.startActivity(intent);
     }
 
     class RequestSuccessReceiver extends BroadcastReceiver {

@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
+
         setContentView(R.layout.activity_main);
         initTabBar();
         initViewPager();
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         GoodsManager manager = new GoodsManager(this);
-        manager.doPostRequest(new HashMap<String, String>(), URLUtils.GOODS_LIST);
+        manager.doPostRequest(new HashMap<String, String>(), URLUtils.GOODS_LIST, URLUtils.RequestType.GOODS_LIST);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 mTitle.setText(R.string.home_page);
                 mHomeImg.setImageResource(R.drawable.home_selected);
-                mHomeText.setTextColor(getResources().getColor(R.color.home_page_selected_text_color));
+                mHomeText.setTextColor(getResources().getColor(R.color.main_theme_color));
                 mOrderImg.setImageResource(R.drawable.order_grey);
                 mOrderText.setTextColor(getResources().getColor(R.color.home_page_normal_text_color));
                 break;
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 mHomeImg.setImageResource(R.drawable.home_grey);
                 mHomeText.setTextColor(getResources().getColor(R.color.home_page_normal_text_color));
                 mOrderImg.setImageResource(R.drawable.order_selected);
-                mOrderText.setTextColor(getResources().getColor(R.color.home_page_selected_text_color));
+                mOrderText.setTextColor(getResources().getColor(R.color.main_theme_color));
                 break;
         }
     }
