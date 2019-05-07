@@ -22,9 +22,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import Util.MapUtil;
 import Util.URLUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -43,6 +46,8 @@ public class GoodsManager {
     private Context mContext;
     private String mRequestBody;
     private ArrayList<GoodsInfo> mGoodsList;
+    private UsrInfo mUsrInfo;
+    private UsrMananger mUsrMananger;
 
     public GoodsManager(Context context) {
         mContext = context;
@@ -86,11 +91,18 @@ public class GoodsManager {
         String sValue = map.values().toString();
         String key[] = skey.substring(1, skey.length() - 1).split(",");
         String value[] = sValue.substring(1, sValue.length() - 1).split(",");
+
+        Set set = map.keySet();
+        Iterator iter = set.iterator();
         FormBody.Builder builder = new FormBody.Builder();
-        for (int i = 0; i < key.length; i++) {
-            builder.add(key[i].trim().replaceAll("\\s", ""), value[i].trim().replaceAll("\\s", ""));
-            Log.i(TAG, "i : " + "    key : " + key[i].replaceAll("\\s", "") + "   value :  " + value[i].replaceAll("\\s", ""));
+        while (iter.hasNext()) {
+            String k = (String) iter.next();
+            builder.add(k, map.get(k));
         }
+//        for (int i = 0; i < key.length; i++) {
+//            builder.add(key[i].trim().replaceAll("\\s", ""), value[i].trim().replaceAll("\\s", ""));
+//            Log.i(TAG, "i : " + "    key : " + key[i].replaceAll("\\s", "") + "   value :  " + value[i].replaceAll("\\s", ""));
+//        }
         RequestBody body = builder.build();
         OkHttpClient client = OkHttpClientInstance.getInstance();
         final Request request = new Request.Builder()
@@ -121,7 +133,8 @@ public class GoodsManager {
     private void responseDeal(String data, URLUtils.RequestType type) {
         switch (type) {
             case LOGIN:
-                UsrInfo usrInfo = new UsrInfo(mContext);
+                mUsrMananger = new UsrMananger(mContext);
+                mUsrInfo = mUsrMananger.parseUsrInfoData(data);
                 break;
             case GOODS_LIST:
                 mGoodsList = parseData(data);
@@ -136,7 +149,11 @@ public class GoodsManager {
                 break;
             case GOODS_INFO:
                 break;
+            case CREAT_ORDER:
 
+                break;
+            default:
+                break;
         }
     }
 

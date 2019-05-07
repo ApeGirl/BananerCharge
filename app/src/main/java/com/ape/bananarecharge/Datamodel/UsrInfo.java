@@ -17,38 +17,74 @@ public class UsrInfo {
 
     private SharedPreferences mSharedPreferences;
     private Context mContext;
-    private String mUseName;
-    private String mPsw;
+    private String phone;
+    private String createTime;
+    private String lastTime;
+    private int id;
+    private String platform;
+    private String brisk;
 
     public UsrInfo(Context context) {
         mContext = context;
         mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
     }
 
-    public String getmUseName() {
-        return mUseName;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setmUseName(String mUseName) {
-        this.mUseName = mUseName;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getmPsw() {
-        return mPsw;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setmPsw(String mPsw) {
-        this.mPsw = mPsw;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public void setUsrInfo(Context context, UsrInfo usrInfo) {
+    public String getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(String lastTime) {
+        this.lastTime = lastTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public String getBrisk() {
+        return brisk;
+    }
+
+    public void setBrisk(String brisk) {
+        this.brisk = brisk;
+    }
+
+    public void saveUsrInfo(Context context) {
         if (mSharedPreferences == null) {
             mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
         }
-        Gson gson = new Gson();
-        String json = gson.toJson(usrInfo);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(usrInfo);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString("usrinfo", json);
+//        editor.putString("usrinfo", json);
         editor.apply();
     }
 
@@ -66,6 +102,6 @@ public class UsrInfo {
     }
 
     public boolean isHasLogin() {
-        return false;
+        return (getUsrInfo(mContext).phone != null);
     }
 }

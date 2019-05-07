@@ -1,5 +1,6 @@
 package com.ape.bananarecharge;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -12,14 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ape.bananarecharge.Controller.GoodsManager;
+import com.ape.bananarecharge.Controller.UsrMananger;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.Datamodel.UsrInfo;
+import com.ape.bananarecharge.Login.LoginActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import Util.MapUtil;
 import Util.PostParamsUtil;
+import Util.URLUtils;
 
 public class GoodsDetailActivity extends AppCompatActivity {
     private static final String TAG = "GoodsDetailActivity";
@@ -44,6 +51,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
 
     private GoodsInfo mGoodInfo;
     private Map<String, String> goodsParamsMap;
+    private Context mContext;
+    private GoodsManager mGoodsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mGoodInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
         Log.i(TAG, "mGoodInfo : " + mGoodInfo);
+        mContext = GoodsDetailActivity.this;
+        mGoodsManager = new GoodsManager(mContext);
         initViews();
     }
 
@@ -76,7 +87,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mGoodsIndexPic.setImageURI(Uri.parse(mGoodInfo.getIndexPicUrl()));
         mGoodsTitle.setText(mGoodInfo.getTitle());
         mPurchaseCount.setText(count + "");
-        String directBuy = "￥"+ mGoodInfo.getPrice() +"  "+ getResources().getString(R.string.direct_buy);
+        String directBuy = "￥" + mGoodInfo.getPrice() + "  " + getResources().getString(R.string.direct_buy);
         String shareBuy = "￥" + mGoodInfo.getShaPrice() + "  " + getResources().getString(R.string.share_buy);
         mDirectBuy.setText(directBuy);
         mShareBuy.setText(shareBuy);
@@ -102,23 +113,32 @@ public class GoodsDetailActivity extends AppCompatActivity {
                         count--;
                         mPurchaseCount.setText(count + "");
                     } else {
-                        Toast.makeText(GoodsDetailActivity.this, "不能再少啦", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "不能再少啦", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case R.id.direct_buy:
-
-                    break;
                 case R.id.share_buy:
+                    UsrMananger usrMananger = new UsrMananger(mContext);
+                    UsrInfo info = usrMananger.getUsrInfoFromDataBase(mContext);
+                    if (info == null) {
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        startActivity(intent);
+                    } else {
+                        if (info.isHasLogin()) {
+                            createOrder(info.getId());
+                            mGoodsManager.doPostRequest(goodsParamsMap, URLUtils.CREATE_ORDER, URLUtils.RequestType.CREAT_ORDER);
+                        }
+                    }
                     break;
             }
         }
     };
 
-    private void createOrderParams(String usrid) {
+    private void createOrder(int id) {
         goodsParamsMap.clear();
         goodsParamsMap.put("goodsid", String.valueOf(mGoodInfo.getGoddsid()));
         goodsParamsMap.put("count", mPurchaseCount.getText().toString());
-        goodsParamsMap.put("userId", usrid);
+        goodsParamsMap.put("userId", String.valueOf(id));
         goodsParamsMap.put("account", mRechargeAccount.getText().toString());
     }
 }
