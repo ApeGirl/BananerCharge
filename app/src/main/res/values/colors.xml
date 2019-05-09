@@ -13,6 +13,7 @@
     <color name="home_page_normal_text_color">#6A6766</color>
 
     <color name="status_color">#F5F5F5</color>
+    <color name="complete_status_color">#ececec</color>
 
     <color name="main_theme_color">#F34545</color>
     <color name="end_color">#F87C65</color>

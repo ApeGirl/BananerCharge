@@ -9,7 +9,7 @@
     <!--home page-->
     <string name="home_page">Home</string>
     <string name="order_page">Order</string>
-    
+
     <!--order-->
     <string name="order_goods_count">counts : </string>
     <string name="order_time">buy time :  </string>
@@ -25,4 +25,13 @@
     <string name="redemption_process">Redemption process</string>
     <string name="direct_buy">Direct purchase</string>
     <string name="share_buy">Purchase sfter share</string>
+
+    <string name="pay_type">pay type</string>
+    <string name="wachat_pay">Wachat pay</string>
+    <string name="ali_pay">Ali pay</string>
+    <string name="buy_now">Buy now</string>
+    <string name="should_pay">Shoule pay :</string>
+
+    <string name="detail">Detaitls</string>
+    <string name="pay">Pay</string>
 </resources>

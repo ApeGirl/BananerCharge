@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".Login.LoginActivity" />
         <activity android:name=".GoodsDetailActivity" />
+        <activity android:name=".PayActivity" />
+        <activity android:name=".PaySuccessActivity"></activity>
     </application>
 
 </manifest>

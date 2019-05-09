@@ -1,6 +1,7 @@
 package com.ape.bananarecharge;
 
 import android.app.Application;
+import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 

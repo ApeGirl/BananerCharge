@@ -2,33 +2,21 @@ package com.ape.bananarecharge.Datamodel;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 
 /**
  * Created by xiaoyue.wang on 2019/4/30.
  */
 
 public class UsrInfo implements Serializable{
-    private static final String USRINFO_TABLE = "usrInfo";
-
-    private SharedPreferences mSharedPreferences;
-    private Context mContext;
     private String phone;
     private String createTime;
     private String lastTime;
     private int id;
     private String platform;
     private String brisk;
-
-    public UsrInfo(Context context) {
-        mContext = context;
-        mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
-    }
 
     public String getPhone() {
         return phone;
@@ -78,31 +66,15 @@ public class UsrInfo implements Serializable{
         this.brisk = brisk;
     }
 
-    public void saveUsrInfo(Context context) {
-        if (mSharedPreferences == null) {
-            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
-        }
-//        Gson gson = new Gson();
-//        String json = gson.toJson(usrInfo);
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-//        editor.putString("usrinfo", json);
-        editor.apply();
-    }
-
-    public UsrInfo getUsrInfo(Context context) {
-        UsrInfo usrInfo;
-        if (mSharedPreferences == null) {
-            mSharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
-        }
-        String json = mSharedPreferences.getString("usrinfo", null);
-        Gson gson = new Gson();
-        Type type = new TypeToken<UsrInfo>() {
-        }.getType();
-        usrInfo = gson.fromJson(json, type);
-        return usrInfo;
-    }
-
-    public boolean isHasLogin() {
-        return (getUsrInfo(mContext).phone != null);
+    @Override
+    public String toString() {
+        return "UsrInfo{" +
+                " phone='" + phone + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", lastTime='" + lastTime + '\'' +
+                ", id=" + id +
+                ", platform='" + platform + '\'' +
+                ", brisk='" + brisk + '\'' +
+                '}';
     }
 }

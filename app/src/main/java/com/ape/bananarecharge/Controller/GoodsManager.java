@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.OkHttpClientInstance;
+import com.ape.bananarecharge.PayActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -46,4 +46,8 @@
     <dimen name="step_line_marginleft">8dp</dimen>
     <dimen name="step_line_width">2dp</dimen>
 
+    <dimen name="pay_cardview_margin_edge">15dp</dimen>
+    <dimen name="pay_cardview_margin_top_bottom">20dp</dimen>
+    <dimen name="pay_type_text_margin_left">16dp</dimen>
+
 </resources>

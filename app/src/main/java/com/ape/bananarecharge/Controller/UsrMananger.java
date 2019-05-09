@@ -32,12 +32,13 @@ import Util.Utils;
 
 public class UsrMananger {
     private static final String TAG = "UsrMananger";
-    private static final String USRINFO_TABLE = "usrInfo";
+    private static final String USRINFO_TABLE = "usrInfo_table";
+    private static final String USR_INFO = "usr_info";
     private UsrInfo mUsrInfo;
     private Context mContext;
 
     public UsrMananger(Context context) {
-        mUsrInfo = new UsrInfo(context);
+        mUsrInfo = new UsrInfo();
         mContext = context;
     }
 
@@ -53,24 +54,22 @@ public class UsrMananger {
     }
 
     private void saveUsrInfo(Context context, UsrInfo usrInfo) {
+
         SharedPreferences sharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("usrinfo", Utils.Object2String(usrInfo, TAG));
+        editor.putString(USR_INFO, Utils.Object2String(usrInfo, TAG));
         editor.apply();
     }
 
     public UsrInfo getUsrInfoFromDataBase(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USRINFO_TABLE, Context.MODE_PRIVATE);
-        String info = sharedPreferences.getString("usrinfo", null);
+        String info = sharedPreferences.getString(USR_INFO, null);
         if (info == null) {
             return null;
         }
 
         return (UsrInfo) Utils.String2Object(info);
     }
-
-
-
 
     private void setUserInfo(JSONObject object) {
         try {
@@ -87,5 +86,9 @@ public class UsrMananger {
 
     private UsrInfo getUserInfo() {
         return mUsrInfo;
+    }
+
+    public boolean isHasLogin() {
+        return (getUserInfo().getPhone() != null);
     }
 }

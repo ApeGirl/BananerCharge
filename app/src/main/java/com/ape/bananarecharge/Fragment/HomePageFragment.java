@@ -122,7 +122,7 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(mContext, GoodsDetailActivity.class);
-        intent.putExtra("goodsInfo", mGoodsInfoList.get(position));
+        intent.putExtra(Utils.GOODS_INFO, mGoodsInfoList.get(position));
         mContext.startActivity(intent);
     }
 

@@ -20,6 +20,8 @@ import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.Login.LoginActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.Map;
 import Util.MapUtil;
 import Util.PostParamsUtil;
 import Util.URLUtils;
+import Util.Utils;
 
 public class GoodsDetailActivity extends AppCompatActivity {
     private static final String TAG = "GoodsDetailActivity";
@@ -46,6 +49,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private ImageView mStep2Pic;
     private TextView mWebAddr;
     private ImageView mBack;
+    private TextView mTitleContent;
 
     private int count = 1;
 
@@ -53,13 +57,14 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private Map<String, String> goodsParamsMap;
     private Context mContext;
     private GoodsManager mGoodsManager;
+    private int type = Utils.NO_TYPE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_detail);
         Intent intent = getIntent();
-        mGoodInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
+        mGoodInfo = (GoodsInfo) intent.getSerializableExtra(Utils.GOODS_INFO);
         Log.i(TAG, "mGoodInfo : " + mGoodInfo);
         mContext = GoodsDetailActivity.this;
         mGoodsManager = new GoodsManager(mContext);
@@ -83,6 +88,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mWebAddr = findViewById(R.id.web_addr);
         mBack = findViewById(R.id.back);
         goodsParamsMap = new HashMap<>();
+        mTitleContent = findViewById(R.id.title_content);
 
         mGoodsIndexPic.setImageURI(Uri.parse(mGoodInfo.getIndexPicUrl()));
         mGoodsTitle.setText(mGoodInfo.getTitle());
@@ -92,17 +98,19 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mDirectBuy.setText(directBuy);
         mShareBuy.setText(shareBuy);
 
+        mBack.setVisibility(View.VISIBLE);
+        mTitleContent.setText(getResources().getString(R.string.detail));
+
         mPlusBtn.setOnClickListener(clickListener);
         mMinusBtn.setOnClickListener(clickListener);
         mDirectBuy.setOnClickListener(clickListener);
         mShareBuy.setOnClickListener(clickListener);
+        mBack.setOnClickListener(clickListener);
     }
 
     View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String rechargeAccount = mRechargeAccount.getText().toString();
-            String buyCount = mPurchaseCount.getText().toString();
             switch (v.getId()) {
                 case R.id.plus:
                     count++;
@@ -117,18 +125,41 @@ public class GoodsDetailActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.direct_buy:
+                    type = Utils.DIRECT_BUY;
                 case R.id.share_buy:
+                    if (type < 0) {
+                        type = Utils.SHARE_BUY;
+                    }
                     UsrMananger usrMananger = new UsrMananger(mContext);
                     UsrInfo info = usrMananger.getUsrInfoFromDataBase(mContext);
+                    Log.i(TAG, " info : " + info);
                     if (info == null) {
                         Intent intent = new Intent(mContext, LoginActivity.class);
                         startActivity(intent);
                     } else {
-                        if (info.isHasLogin()) {
+                        if (usrMananger.isHasLogin()) {
+                            if (mRechargeAccount.getText().toString() == null) {
+                                Toast.makeText(mContext, "请输入充值账号", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                             createOrder(info.getId());
                             mGoodsManager.doPostRequest(goodsParamsMap, URLUtils.CREATE_ORDER, URLUtils.RequestType.CREAT_ORDER);
+
+                            Bundle bundle1 = new Bundle();
+                            bundle1.putSerializable(Utils.GOODS_INFO, mGoodInfo);
+                            bundle1.putString(Utils.BUY_COUNT, mPurchaseCount.getText().toString());
+                            bundle1.putString(Utils.UER_ACCOUNT, mRechargeAccount.getText().toString());
+                            bundle1.putInt(Utils.BUY_TYPE, type);
+                            Intent intent1 = new Intent(mContext, PayActivity.class);
+                            intent1.putExtras(bundle1);
+                            mContext.startActivity(intent1);
                         }
                     }
+                    break;
+                case R.id.back:
+                    finish();
+                    break;
+                default:
                     break;
             }
         }
