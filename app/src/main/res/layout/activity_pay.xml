@@ -220,4 +220,24 @@
             android:textColor="@color/login_text_color"
             android:textSize="@dimen/goods_main_text_size" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/pay_wait_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/pay_wait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="正在跳转...."
+            android:layout_below="@+id/pay_wait"
+            android:gravity="center"
+            android:textSize="@dimen/goods_main_text_size"
+            android:textColor="@color/main_theme_color"/>
+    </RelativeLayout>
 </RelativeLayout>
