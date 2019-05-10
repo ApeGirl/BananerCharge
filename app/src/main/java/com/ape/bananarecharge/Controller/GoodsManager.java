@@ -30,6 +30,7 @@ import java.util.Set;
 
 import Util.MapUtil;
 import Util.URLUtils;
+import Util.Utils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -138,7 +139,7 @@ public class GoodsManager {
                 mUsrInfo = mUsrMananger.parseUsrInfoData(data);
                 break;
             case GOODS_LIST:
-                mGoodsList = parseData(data);
+                mGoodsList = parseArrayData(data);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("list", mGoodsList);
                 Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
@@ -149,8 +150,17 @@ public class GoodsManager {
                 Log.i(TAG, "mGoodsList : " + mGoodsList);
                 break;
             case GOODS_INFO:
+
                 break;
             case CREAT_ORDER:
+                Intent orderIntent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
+                orderIntent.putExtra(Utils.ORDER_ID, getOrderId(data));
+                LocalBroadcastManager orderBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+                orderBroadcastManager.sendBroadcast(orderIntent);
+                break;
+            case ALI_PAY:
+                break;
+            case WECHAT_PAY:
 
                 break;
             default:
@@ -158,7 +168,20 @@ public class GoodsManager {
         }
     }
 
-    private ArrayList<GoodsInfo> parseData(String data) {
+    private String getOrderId(String data) {
+        String orderId = null;
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            orderId = jsonObject.getString("orderid");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i(TAG, "orderid : " + orderId);
+        return orderId;
+    }
+
+    private ArrayList<GoodsInfo> parseArrayData(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
             JSONArray jsonArray = jsonObject.getJSONArray("list");

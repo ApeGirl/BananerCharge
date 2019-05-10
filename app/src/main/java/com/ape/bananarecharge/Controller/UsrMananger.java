@@ -45,7 +45,7 @@ public class UsrMananger {
     public UsrInfo parseUsrInfoData(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
-            setUserInfo(jsonObject);
+            parseUserInfo(jsonObject);
             saveUsrInfo(mContext, mUsrInfo);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class UsrMananger {
         return (UsrInfo) Utils.String2Object(info);
     }
 
-    private void setUserInfo(JSONObject object) {
+    public void parseUserInfo(JSONObject object) {
         try {
             mUsrInfo.setId(object.getInt("id"));
             mUsrInfo.setPhone(object.getString("phone"));
@@ -79,9 +79,14 @@ public class UsrMananger {
             mUsrInfo.setCreateTime(object.getString("createTime"));
             mUsrInfo.setLastTime(object.getString("lastTime"));
             mUsrInfo.setPlatform(object.getString("platform"));
+            Log.i(TAG, " phone : " + mUsrInfo.getPhone());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUsrInfo(UsrInfo info) {
+        mUsrInfo = info;
     }
 
     private UsrInfo getUserInfo() {
@@ -89,6 +94,7 @@ public class UsrMananger {
     }
 
     public boolean isHasLogin() {
+        Log.i(TAG, "getUserInfo().getPhone() : "+ getUserInfo().getPhone());
         return (getUserInfo().getPhone() != null);
     }
 }

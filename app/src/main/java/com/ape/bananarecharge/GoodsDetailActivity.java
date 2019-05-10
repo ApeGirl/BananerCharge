@@ -1,12 +1,17 @@
 package com.ape.bananarecharge;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,6 +63,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private Context mContext;
     private GoodsManager mGoodsManager;
     private int type = Utils.NO_TYPE;
+    private String mOrderId;
+    private MyReceiver mReceiver;
+    private LocalBroadcastManager mLocalBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mContext = GoodsDetailActivity.this;
         mGoodsManager = new GoodsManager(mContext);
         initViews();
+//        hideSoftKeyboard(this);
     }
 
     private void initViews() {
@@ -90,6 +99,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
         goodsParamsMap = new HashMap<>();
         mTitleContent = findViewById(R.id.title_content);
 
+        mReceiver = new MyReceiver();
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+
         mGoodsIndexPic.setImageURI(Uri.parse(mGoodInfo.getIndexPicUrl()));
         mGoodsTitle.setText(mGoodInfo.getTitle());
         mPurchaseCount.setText(count + "");
@@ -106,6 +118,18 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mDirectBuy.setOnClickListener(clickListener);
         mShareBuy.setOnClickListener(clickListener);
         mBack.setOnClickListener(clickListener);
+
+        mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+        IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_CREATE_ORDER_RECEIVER);
+        mLocalBroadcastManager.registerReceiver(mReceiver, intentFilter);
+    }
+
+    private void hideSoftKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     View.OnClickListener clickListener = new View.OnClickListener() {
@@ -127,16 +151,19 @@ public class GoodsDetailActivity extends AppCompatActivity {
                 case R.id.direct_buy:
                     type = Utils.DIRECT_BUY;
                 case R.id.share_buy:
+                    Log.i(TAG, " type : " + type);
                     if (type < 0) {
                         type = Utils.SHARE_BUY;
                     }
                     UsrMananger usrMananger = new UsrMananger(mContext);
                     UsrInfo info = usrMananger.getUsrInfoFromDataBase(mContext);
+                    usrMananger.setUsrInfo(info);
                     Log.i(TAG, " info : " + info);
                     if (info == null) {
                         Intent intent = new Intent(mContext, LoginActivity.class);
                         startActivity(intent);
                     } else {
+                        Log.i(TAG, " usrMananger.isHasLogin() : " + usrMananger.isHasLogin());
                         if (usrMananger.isHasLogin()) {
                             if (mRechargeAccount.getText().toString() == null) {
                                 Toast.makeText(mContext, "请输入充值账号", Toast.LENGTH_SHORT).show();
@@ -155,6 +182,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
                             mContext.startActivity(intent1);
                         }
                     }
+                    type = Utils.NO_TYPE;
                     break;
                 case R.id.back:
                     finish();
@@ -171,5 +199,23 @@ public class GoodsDetailActivity extends AppCompatActivity {
         goodsParamsMap.put("count", mPurchaseCount.getText().toString());
         goodsParamsMap.put("userId", String.valueOf(id));
         goodsParamsMap.put("account", mRechargeAccount.getText().toString());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mLocalBroadcastManager != null) {
+            mLocalBroadcastManager.unregisterReceiver(mReceiver);
+        }
+    }
+
+    class CreateOderReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mOrderId = intent.getStringExtra(Utils.ORDER_ID);
+            goodsParamsMap.put(Utils.ORDER_ID, mOrderId);
+            Log.i(TAG, "mOrderId : " + mOrderId);
+        }
     }
 }

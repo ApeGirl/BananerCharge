@@ -1,25 +1,40 @@
 package com.ape.bananarecharge;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ape.bananarecharge.Controller.GoodsManager;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.Fragment.HomePageFragment;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import Util.URLUtils;
 import Util.Utils;
 
 public class PayActivity extends AppCompatActivity {
+    private static final String TAG = "PayActivity";
     private SimpleDraweeView mGoodsPic;
     private TextView mGoodTitle;
     private TextView mBuyCount;
@@ -33,6 +48,15 @@ public class PayActivity extends AppCompatActivity {
     private GoodsInfo mGoodsInfo;
     private String mUsrAccount;
     private int mPayType = -1;
+    private boolean mSelected = false;
+    private boolean isAliSelected = false;
+    private GoodsManager mGoodManager;
+    private Context mContext;
+    private MyReceiver mReceiver;
+    private LocalBroadcastManager mLocalBroadcastManager;
+    private String mOrderId;
+    private Map<String, String> mMap;
+    private RelativeLayout mPayWait;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +66,14 @@ public class PayActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        mContext = PayActivity.this;
         Bundle bundle = getIntent().getExtras();
         mGoodsInfo = (GoodsInfo) bundle.getSerializable(Utils.GOODS_INFO);
         mUsrAccount = bundle.getString(Utils.UER_ACCOUNT);
         String buyCounts = bundle.getString(Utils.BUY_COUNT);
         int buyType = bundle.getInt(Utils.BUY_TYPE);
+        mGoodManager = new GoodsManager(mContext);
+        mMap = new HashMap<>();
 
         mGoodsPic = findViewById(R.id.goods_pic);
         mGoodTitle = findViewById(R.id.goods_title);
@@ -56,10 +83,11 @@ public class PayActivity extends AppCompatActivity {
         mBuyBtn = findViewById(R.id.buy_btn);
         mWachatCheck = findViewById(R.id.wachat_buy);
         mAliCheck = findViewById(R.id.ali_buy);
+        mPayWait = findViewById(R.id.pay_wait_layout);
 
         mBuyCount.setText(buyCounts);
         double price = (buyType == Utils.DIRECT_BUY) ? mGoodsInfo.getPrice() : mGoodsInfo.getShaPrice();
-        String price2 = "￥" + price;
+        String price2 = "￥" + price * Integer.parseInt(buyCounts);
         mGoodsPrice.setText(price2);
         mBottomPrice.setText(price2);
         mGoodTitle.setText(mGoodsInfo.getTitle());
@@ -73,7 +101,9 @@ public class PayActivity extends AppCompatActivity {
         mWachatCheck.setOnClickListener(onClickListener);
         mAliCheck.setOnClickListener(onClickListener);
         mBuyBtn.setOnClickListener(onClickListener);
+        mBack.setOnClickListener(onClickListener);
 
+        mReceiver = new MyReceiver();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -81,15 +111,24 @@ public class PayActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.wachat_buy:
-                    mPayType = Utils.WACHAT_PAY;
-                    mWachatCheck.setImageResource(R.drawable.selected);
+                    Utils.pay_type = Utils.WACHAT_PAY;
+                    changePayState(mWachatCheck, Utils.pay_type );
                     break;
                 case R.id.ali_buy:
-                    mPayType = Utils.Ali_PAY;
-                    mAliCheck.setImageResource(R.drawable.selected);
+                    Utils.pay_type = Utils.Ali_PAY;
+                    changePayState(mAliCheck, Utils.pay_type );
                     break;
                 case R.id.buy_btn:
-
+                    if (mOrderId == null) {
+                        mPayWait.setVisibility(View.VISIBLE);
+                        Utils.setPayWaitLayout(mPayWait);
+                    } else {
+                        mMap.put(Utils.ORDER_ID, mOrderId);
+                        Utils.createOrderPay(mContext, Utils.pay_type, mMap);
+                    }
+                    break;
+                case R.id.back:
+                    finish();
                     break;
                 default:
                     break;
@@ -97,13 +136,25 @@ public class PayActivity extends AppCompatActivity {
         }
     };
 
-    private void createOrderPay(int type) {
-        if (type == Utils.WACHAT_PAY) {
-
-        } else if (type == Utils.Ali_PAY) {
-
+    private void changePayState(ImageView view, int type) {
+        if (type == Utils.Ali_PAY) {
+            if (!mSelected) {
+                view.setImageResource(R.drawable.selected);
+                isAliSelected = true;
+            } else {
+                view.setImageResource(R.drawable.select);
+                isAliSelected = false;
+            }
+            mSelected = !mSelected;
         } else {
-            Toast.makeText(PayActivity.this, "请选择支付方式", Toast.LENGTH_SHORT).show();
+            if (!isAliSelected) {
+                if (!mSelected) {
+                    view.setImageResource(R.drawable.selected);
+                } else {
+                    view.setImageResource(R.drawable.select);
+                }
+                mSelected = !mSelected;
+            }
         }
     }
 }
