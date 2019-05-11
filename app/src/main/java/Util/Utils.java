@@ -2,6 +2,7 @@ package Util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.ape.bananarecharge.Controller.GoodsManager;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.Datamodel.PayInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,6 +30,7 @@ public class Utils {
     public static final String UER_ACCOUNT = "usr_account";
     public static final String BUY_TYPE = "usr_account";
     public static final String ORDER_ID = "orderid";
+    public static final String PAY_BUNDLE_KEY = "pay_info";
 
     public static final int NO_TYPE = -1;
     public static final int DIRECT_BUY = 1;
@@ -38,6 +41,9 @@ public class Utils {
 
     private static RelativeLayout state;
     private static final String TAG = "Utils2";
+    private static String mOrderId;
+    private static PayInfo mPayInfo;
+
     public static String Object2String(Object object, String activity) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = null;
@@ -83,7 +89,9 @@ public class Utils {
         } else if (type == Ali_PAY) {
             goodsManager.doPostRequest(map, URLUtils.ORDER_ALIPAY, URLUtils.RequestType.ALI_PAY);
         } else {
+            Looper.prepare();
             Toast.makeText(context, "请选择支付方式", Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
     }
 
@@ -95,6 +103,21 @@ public class Utils {
         return state;
     }
 
+    public static PayInfo getPayInfo() {
+        return mPayInfo;
+    }
+
+    public static void setPayInfo(PayInfo mPayInfo) {
+        Utils.mPayInfo = mPayInfo;
+    }
+
+    public static String getOrderId() {
+        return mOrderId;
+    }
+
+    public static void setOrderId(String mOrderId) {
+        Utils.mOrderId = mOrderId;
+    }
 }
 
 

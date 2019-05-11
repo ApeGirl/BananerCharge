@@ -119,12 +119,18 @@ public class PayActivity extends AppCompatActivity {
                     changePayState(mAliCheck, Utils.pay_type );
                     break;
                 case R.id.buy_btn:
-                    if (mOrderId == null) {
+                    String orderId = Utils.getOrderId();
+                    Log.i(TAG, "pay orderId : " + orderId);
+                    if (orderId != null) {
+                        Map<String, String> map = new HashMap<>();
+                        map.put(Utils.ORDER_ID, orderId);
+                        Utils.createOrderPay(mContext, Utils.pay_type, map);
+                    }
+                    if (Utils.getPayInfo() == null) {
                         mPayWait.setVisibility(View.VISIBLE);
                         Utils.setPayWaitLayout(mPayWait);
                     } else {
-                        mMap.put(Utils.ORDER_ID, mOrderId);
-                        Utils.createOrderPay(mContext, Utils.pay_type, mMap);
+                        mPayWait.setVisibility(View.GONE);
                     }
                     break;
                 case R.id.back:

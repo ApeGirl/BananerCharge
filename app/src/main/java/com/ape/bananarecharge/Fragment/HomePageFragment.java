@@ -107,7 +107,8 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
         mReceiver = new RequestSuccessReceiver();
         mLocalBroadcastManager.registerReceiver( mReceiver , intentFilter );
-
+        mAdapter = new GridAdapter(mContext, mGoodsInfoList);
+        mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
     }
 

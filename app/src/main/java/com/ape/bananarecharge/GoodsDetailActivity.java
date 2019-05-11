@@ -1,11 +1,14 @@
 package com.ape.bananarecharge;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,8 @@ import Util.Utils;
 
 public class GoodsDetailActivity extends AppCompatActivity {
     private static final String TAG = "GoodsDetailActivity";
+    private static final String SHARE_DIALOG_TAG = "share_dialog";
+    private static final String SHARE_STAE = "share_state";
 
     private SimpleDraweeView mGoodsIndexPic;
     private TextView mGoodsTitle;
@@ -55,6 +61,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private TextView mWebAddr;
     private ImageView mBack;
     private TextView mTitleContent;
+    private ImageView mShare;
+    private RelativeLayout mShareDialog;
+    private TextView mShareText;
 
     private int count = 1;
 
@@ -66,18 +75,27 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private String mOrderId;
     private MyReceiver mReceiver;
     private LocalBroadcastManager mLocalBroadcastManager;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_detail);
+
         Intent intent = getIntent();
         mGoodInfo = (GoodsInfo) intent.getSerializableExtra(Utils.GOODS_INFO);
         Log.i(TAG, "mGoodInfo : " + mGoodInfo);
         mContext = GoodsDetailActivity.this;
         mGoodsManager = new GoodsManager(mContext);
         initViews();
-//        hideSoftKeyboard(this);
+
+        mSharedPreferences = getSharedPreferences(SHARE_DIALOG_TAG, MODE_PRIVATE);
+        boolean isShowShare = mSharedPreferences.getBoolean(SHARE_STAE, true);
+        if (isShowShare) {
+            mShareDialog.setVisibility(View.VISIBLE);
+        } else {
+            mShareDialog.setVisibility(View.GONE);
+        }
     }
 
     private void initViews() {
@@ -98,6 +116,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mBack = findViewById(R.id.back);
         goodsParamsMap = new HashMap<>();
         mTitleContent = findViewById(R.id.title_content);
+        mShare = findViewById(R.id.more);
+        mShareDialog = findViewById(R.id.share_dialog);
+        mShareText = findViewById(R.id.share_remind_text);
 
         mReceiver = new MyReceiver();
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
@@ -111,6 +132,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mShareBuy.setText(shareBuy);
 
         mBack.setVisibility(View.VISIBLE);
+        mShare.setVisibility(View.VISIBLE);
         mTitleContent.setText(getResources().getString(R.string.detail));
 
         mPlusBtn.setOnClickListener(clickListener);
@@ -118,18 +140,13 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mDirectBuy.setOnClickListener(clickListener);
         mShareBuy.setOnClickListener(clickListener);
         mBack.setOnClickListener(clickListener);
+        mShare.setOnClickListener(clickListener);
+        mShareText.setOnClickListener(clickListener);
+
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_CREATE_ORDER_RECEIVER);
         mLocalBroadcastManager.registerReceiver(mReceiver, intentFilter);
-    }
-
-    private void hideSoftKeyboard(Activity activity) {
-        View view = activity.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
     View.OnClickListener clickListener = new View.OnClickListener() {
@@ -187,6 +204,14 @@ public class GoodsDetailActivity extends AppCompatActivity {
                 case R.id.back:
                     finish();
                     break;
+                case R.id.more:
+                    break;
+                case R.id.share_remind_text:
+                    mShareDialog.setVisibility(View.GONE);
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putBoolean(SHARE_STAE, false);
+                    editor.apply();
+                    break;
                 default:
                     break;
             }
@@ -206,6 +231,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
         super.onDestroy();
         if (mLocalBroadcastManager != null) {
             mLocalBroadcastManager.unregisterReceiver(mReceiver);
+        }
+        if (mSharedPreferences != null) {
+            mSharedPreferences = null;
         }
     }
 

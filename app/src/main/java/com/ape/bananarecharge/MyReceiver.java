@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ape.bananarecharge.Controller.GoodsManager;
+import com.ape.bananarecharge.Datamodel.PayInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,15 +25,15 @@ public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = "MyReceiver";
     private String mOrderId;
     private Map<String, String> mMap = new HashMap<>();
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        mOrderId = intent.getStringExtra(Utils.ORDER_ID);
-        mMap.put(Utils.ORDER_ID, mOrderId);
+        PayInfo payInfo = (PayInfo) intent.getExtras().getSerializable(Utils.PAY_BUNDLE_KEY);
+        Utils.setPayInfo(payInfo);
         RelativeLayout relativeLayout = Utils.getPayWaitState();
-        if (relativeLayout.getVisibility() == View.VISIBLE) {
-            Utils.createOrderPay(context, Utils.pay_type, mMap);
+        if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
             relativeLayout.setVisibility(View.GONE);
         }
-        Log.i(TAG, "mOrderId : " + mOrderId);
+        Log.d(TAG, "payInfo : " + payInfo);
     }
 }

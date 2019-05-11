@@ -71,7 +71,7 @@ public class UsrMananger {
         return (UsrInfo) Utils.String2Object(info);
     }
 
-    public void parseUserInfo(JSONObject object) {
+    private void parseUserInfo(JSONObject object) {
         try {
             mUsrInfo.setId(object.getInt("id"));
             mUsrInfo.setPhone(object.getString("phone"));

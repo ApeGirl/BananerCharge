@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
+import com.ape.bananarecharge.Datamodel.PayInfo;
 import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.OkHttpClientInstance;
 import com.ape.bananarecharge.PayActivity;
@@ -50,6 +51,7 @@ public class GoodsManager {
     private ArrayList<GoodsInfo> mGoodsList;
     private UsrInfo mUsrInfo;
     private UsrMananger mUsrMananger;
+    private String mOrderId;
 
     public GoodsManager(Context context) {
         mContext = context;
@@ -131,7 +133,8 @@ public class GoodsManager {
             }
         });
     }
-
+    private static final String INFO_LIST = "info_list";
+    private static final String GOODS_INFO = "goods_info";
     private void responseDeal(String data, URLUtils.RequestType type) {
         switch (type) {
             case LOGIN:
@@ -140,12 +143,17 @@ public class GoodsManager {
                 break;
             case GOODS_LIST:
                 mGoodsList = parseArrayData(data);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("list", mGoodsList);
-                Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
-                intent.putExtras(bundle);
-                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
-                localBroadcastManager.sendBroadcast(intent);
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(INFO_LIST, Utils.Object2String(mGoodsList, TAG));
+                editor.apply();
+
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("list", mGoodsList);
+//                Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
+//                intent.putExtras(bundle);
+//                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+//                localBroadcastManager.sendBroadcast(intent);
 
                 Log.i(TAG, "mGoodsList : " + mGoodsList);
                 break;
@@ -153,32 +161,36 @@ public class GoodsManager {
 
                 break;
             case CREAT_ORDER:
-                Intent orderIntent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
-                orderIntent.putExtra(Utils.ORDER_ID, getOrderId(data));
-                LocalBroadcastManager orderBroadcastManager = LocalBroadcastManager.getInstance(mContext);
-                orderBroadcastManager.sendBroadcast(orderIntent);
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    mOrderId = jsonObject.getString("orderid");
+                    Utils.setOrderId(mOrderId);
+                    Log.i(TAG, "orderId : " + mOrderId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case ALI_PAY:
                 break;
             case WECHAT_PAY:
 
+                PayManager payManager = new PayManager();
+                PayInfo payInfo = payManager.parsePayInfoData(data);
+                Log.i(TAG, "wachat pay payInfo : " + payInfo);
+                Bundle payBundle = new Bundle();
+                payBundle.putSerializable(Utils.PAY_BUNDLE_KEY, payInfo);
+                Intent payIntent = new Intent(URLUtils.ACTION_CREATE_ORDER_RECEIVER);
+                payIntent.putExtras(payBundle);
+                LocalBroadcastManager payBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+                payBroadcastManager.sendBroadcast(payIntent);
                 break;
             default:
                 break;
         }
     }
 
-    private String getOrderId(String data) {
-        String orderId = null;
-        try {
-            JSONObject jsonObject = new JSONObject(data);
-            orderId = jsonObject.getString("orderid");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.i(TAG, "orderid : " + orderId);
-        return orderId;
+    public String getOrderId() {
+        return mOrderId;
     }
 
     private ArrayList<GoodsInfo> parseArrayData(String data) {
