@@ -25,14 +25,24 @@ public class MyReceiver extends BroadcastReceiver {
     private static final String TAG = "MyReceiver";
     private String mOrderId;
     private Map<String, String> mMap = new HashMap<>();
+    private String mUrl;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         PayInfo payInfo = (PayInfo) intent.getExtras().getSerializable(Utils.PAY_BUNDLE_KEY);
         Utils.setPayInfo(payInfo);
+        GoodsManager goodsManager = new GoodsManager(context);
+        Map<String, String> map = new HashMap<>();
         RelativeLayout relativeLayout = Utils.getPayWaitState();
+
+        if (Utils.pay_type == Utils.Ali_PAY) {
+            mUrl = URLUtils.ALI_PAY;
+        } else if (Utils.pay_type == Utils.WACHAT_PAY) {
+            mUrl = URLUtils.ORDER_WECHAT_PAY;
+        }
         if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
             relativeLayout.setVisibility(View.GONE);
+            goodsManager.doPostRequest(map, mUrl, URLUtils.RequestType.ALI_PAY);
         }
         Log.d(TAG, "payInfo : " + payInfo);
     }

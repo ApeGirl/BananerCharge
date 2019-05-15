@@ -171,9 +171,11 @@ public class GoodsManager {
                 }
                 break;
             case ALI_PAY:
-                break;
-            case WECHAT_PAY:
 
+                break;
+            case ALI_ORDER_PAY:
+                break;
+            case WECHAT_ORDER_PAY:
                 PayManager payManager = new PayManager();
                 PayInfo payInfo = payManager.parsePayInfoData(data);
                 Log.i(TAG, "wachat pay payInfo : " + payInfo);

@@ -27,4 +27,5 @@
     <color name="end_color_blue">#6DC0FF</color>
 
     <color name="goods_info_title_text_color">#ffffff</color>
+    <color name="button_unenabled_text_color">#aaaaaa</color>
 </resources>

@@ -85,9 +85,9 @@ public class Utils {
     public static void createOrderPay(Context context, int type, Map map){
         GoodsManager goodsManager = new GoodsManager(context);
         if (type == WACHAT_PAY) {
-            goodsManager.doPostRequest(map, URLUtils.ORDER_WECHAT_PAY, URLUtils.RequestType.WECHAT_PAY);
+            goodsManager.doPostRequest(map, URLUtils.ORDER_WECHAT_PAY, URLUtils.RequestType.WECHAT_ORDER_PAY);
         } else if (type == Ali_PAY) {
-            goodsManager.doPostRequest(map, URLUtils.ORDER_ALIPAY, URLUtils.RequestType.ALI_PAY);
+            goodsManager.doPostRequest(map, URLUtils.ORDER_ALIPAY, URLUtils.RequestType.ALI_ORDER_PAY);
         } else {
             Looper.prepare();
             Toast.makeText(context, "请选择支付方式", Toast.LENGTH_SHORT).show();

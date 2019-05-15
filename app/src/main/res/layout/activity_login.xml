@@ -90,12 +90,13 @@
             </LinearLayout>
 
 
-            <Button
+            <TextView
                 android:id="@+id/verificationCodeBtn"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/login_edit_layout_height"
                 android:layout_marginLeft="12dp"
                 android:layout_weight="1.2"
+                android:gravity="center"
                 android:background="@drawable/edit_layout_bacground"
                 android:singleLine="true"
                 android:text="@string/vertification_code"

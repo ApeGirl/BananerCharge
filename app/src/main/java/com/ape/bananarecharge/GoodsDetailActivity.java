@@ -219,6 +219,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
     };
 
     private void createOrder(int id) {
+        Log.i(TAG, " userId : " + id
+        + "  goodsid : " + String.valueOf(mGoodInfo.getGoddsid())
+        + "    ");
         goodsParamsMap.clear();
         goodsParamsMap.put("goodsid", String.valueOf(mGoodInfo.getGoddsid()));
         goodsParamsMap.put("count", mPurchaseCount.getText().toString());
