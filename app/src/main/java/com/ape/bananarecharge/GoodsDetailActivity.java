@@ -28,6 +28,12 @@ import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.Login.LoginActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.media.UMWeb;
 
 import org.w3c.dom.Text;
 
@@ -135,6 +141,10 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mShare.setVisibility(View.VISIBLE);
         mTitleContent.setText(getResources().getString(R.string.detail));
 
+        mStep1.setText(mGoodInfo.getStepsStr());
+        mStep2.setText(mGoodInfo.getStepsStr());
+        mStep3.setText(mGoodInfo.getExchangeAddress());
+
         mPlusBtn.setOnClickListener(clickListener);
         mMinusBtn.setOnClickListener(clickListener);
         mDirectBuy.setOnClickListener(clickListener);
@@ -142,7 +152,6 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mBack.setOnClickListener(clickListener);
         mShare.setOnClickListener(clickListener);
         mShareText.setOnClickListener(clickListener);
-
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_CREATE_ORDER_RECEIVER);
@@ -205,6 +214,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
                     finish();
                     break;
                 case R.id.more:
+                    share2();
                     break;
                 case R.id.share_remind_text:
                     mShareDialog.setVisibility(View.GONE);
@@ -218,10 +228,71 @@ public class GoodsDetailActivity extends AppCompatActivity {
         }
     };
 
+    private void share() {
+        UMImage thumb =  new UMImage(this, R.drawable.app_icon);
+        UMWeb web = new UMWeb("http://39.97.180.130:8080/renren-fast/file/6fa93db4cdf140bb8bf23e2e1c0bce90.jpg");
+        web.setTitle(mGoodInfo.getShareTitle());//标题
+        web.setDescription(mGoodInfo.getShareDesc());//描述
+        web.setThumb(thumb);
+        new ShareAction(GoodsDetailActivity.this)
+                .withMedia(web)
+                .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN)
+                .setCallback(shareListener)
+                .open();
+    }
+
+    private void share2() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain"); //分享的是文本类型
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "http://39.97.180.130:8080/renren-fast/file/6fa93db4cdf140bb8bf23e2e1c0bce90.jpg");//分享出去的内容
+        startActivity(Intent.createChooser(shareIntent, mGoodInfo.getShareTitle()));    //注意这里的变化
+    }
+
+    private UMShareListener shareListener = new UMShareListener() {
+        /**
+         * @descrption 分享开始的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onStart(SHARE_MEDIA platform) {
+
+        }
+
+        /**
+         * @descrption 分享成功的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onResult(SHARE_MEDIA platform) {
+            Toast.makeText(GoodsDetailActivity.this, "成功了", Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @descrption 分享失败的回调
+         * @param platform 平台类型
+         * @param t 错误原因
+         */
+        @Override
+        public void onError(SHARE_MEDIA platform, Throwable t) {
+            Toast.makeText(GoodsDetailActivity.this, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * @descrption 分享取消的回调
+         * @param platform 平台类型
+         */
+        @Override
+        public void onCancel(SHARE_MEDIA platform) {
+            Toast.makeText(GoodsDetailActivity.this, "取消了", Toast.LENGTH_LONG).show();
+
+        }
+    };
+
     private void createOrder(int id) {
         Log.i(TAG, " userId : " + id
-        + "  goodsid : " + String.valueOf(mGoodInfo.getGoddsid())
-        + "    ");
+                + "  goodsid : " + String.valueOf(mGoodInfo.getGoddsid())
+                + "    ");
         goodsParamsMap.clear();
         goodsParamsMap.put("goodsid", String.valueOf(mGoodInfo.getGoddsid()));
         goodsParamsMap.put("count", mPurchaseCount.getText().toString());
@@ -248,5 +319,12 @@ public class GoodsDetailActivity extends AppCompatActivity {
             goodsParamsMap.put(Utils.ORDER_ID, mOrderId);
             Log.i(TAG, "mOrderId : " + mOrderId);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //QQ或者新浪分享
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 }

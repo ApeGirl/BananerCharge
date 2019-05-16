@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="15dp"
-        android:src="@drawable/back"/>
+        android:src="@drawable/back"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/title_content"
@@ -28,5 +29,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:layout_weight="1"
-        android:src="@drawable/more"/>
+        android:padding="5dp"
+        android:src="@drawable/share"
+        android:visibility="gone"/>
 </LinearLayout>
