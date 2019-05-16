@@ -13,11 +13,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +31,8 @@ import com.ape.bananarecharge.Controller.UsrMananger;
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.Datamodel.UsrInfo;
 import com.ape.bananarecharge.Login.LoginActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -34,6 +40,7 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
+import com.umeng.socialize.shareboard.ShareBoardConfig;
 
 import org.w3c.dom.Text;
 
@@ -59,17 +66,12 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private TextView mPurchaseCount;
     private Button mDirectBuy;
     private Button mShareBuy;
-    private TextView mStep1;
-    private TextView mStep2;
-    private TextView mStep3;
-    private ImageView mStep1Pic;
-    private ImageView mStep2Pic;
-    private TextView mWebAddr;
     private ImageView mBack;
     private TextView mTitleContent;
     private ImageView mShare;
     private RelativeLayout mShareDialog;
     private TextView mShareText;
+    private ListView mStepList;
 
     private int count = 1;
 
@@ -83,6 +85,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
     private LocalBroadcastManager mLocalBroadcastManager;
     private SharedPreferences mSharedPreferences;
 
+    private boolean isShareSuccess = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +99,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mGoodsManager = new GoodsManager(mContext);
         initViews();
 
-        mSharedPreferences = getSharedPreferences(SHARE_DIALOG_TAG, MODE_PRIVATE);
-        boolean isShowShare = mSharedPreferences.getBoolean(SHARE_STAE, true);
-        if (isShowShare) {
-            mShareDialog.setVisibility(View.VISIBLE);
-        } else {
-            mShareDialog.setVisibility(View.GONE);
-        }
+
     }
 
     private void initViews() {
@@ -113,18 +111,16 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mPurchaseCount = findViewById(R.id.count_num);
         mDirectBuy = findViewById(R.id.direct_buy);
         mShareBuy = findViewById(R.id.share_buy);
-        mStep1 = findViewById(R.id.step1);
-        mStep2 = findViewById(R.id.step2);
-        mStep3 = findViewById(R.id.step3);
-        mStep1Pic = findViewById(R.id.step1_pic);
-        mStep2Pic = findViewById(R.id.step2_pic);
-        mWebAddr = findViewById(R.id.web_addr);
+
         mBack = findViewById(R.id.back);
         goodsParamsMap = new HashMap<>();
         mTitleContent = findViewById(R.id.title_content);
         mShare = findViewById(R.id.more);
         mShareDialog = findViewById(R.id.share_dialog);
         mShareText = findViewById(R.id.share_remind_text);
+        mStepList = findViewById(R.id.steps_list);
+        StepsAdapter adapter = new StepsAdapter();
+        mStepList.setAdapter(adapter);
 
         mReceiver = new MyReceiver();
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
@@ -136,14 +132,11 @@ public class GoodsDetailActivity extends AppCompatActivity {
         String shareBuy = "￥" + mGoodInfo.getShaPrice() + "  " + getResources().getString(R.string.share_buy);
         mDirectBuy.setText(directBuy);
         mShareBuy.setText(shareBuy);
+        mRechargeAccount.setHint(mGoodInfo.getPrompt());
 
         mBack.setVisibility(View.VISIBLE);
         mShare.setVisibility(View.VISIBLE);
         mTitleContent.setText(getResources().getString(R.string.detail));
-
-        mStep1.setText(mGoodInfo.getStepsStr());
-        mStep2.setText(mGoodInfo.getStepsStr());
-        mStep3.setText(mGoodInfo.getExchangeAddress());
 
         mPlusBtn.setOnClickListener(clickListener);
         mMinusBtn.setOnClickListener(clickListener);
@@ -152,6 +145,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         mBack.setOnClickListener(clickListener);
         mShare.setOnClickListener(clickListener);
         mShareText.setOnClickListener(clickListener);
+        mShareDialog.setOnClickListener(clickListener);
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_CREATE_ORDER_RECEIVER);
@@ -174,12 +168,20 @@ public class GoodsDetailActivity extends AppCompatActivity {
                         Toast.makeText(mContext, "不能再少啦", Toast.LENGTH_SHORT).show();
                     }
                     break;
-                case R.id.direct_buy:
-                    type = Utils.DIRECT_BUY;
                 case R.id.share_buy:
+                    if (!isShareSuccess) {
+                        mShareDialog.setVisibility(View.VISIBLE);
+                        break;
+                    } else {
+                        if (mShareDialog.getVisibility() == View.VISIBLE) {
+                            mShareDialog.setVisibility(View.GONE);
+                        }
+                        type = Utils.SHARE_BUY;
+                    }
+                case R.id.direct_buy:
                     Log.i(TAG, " type : " + type);
                     if (type < 0) {
-                        type = Utils.SHARE_BUY;
+                        type = Utils.DIRECT_BUY;
                     }
                     UsrMananger usrMananger = new UsrMananger(mContext);
                     UsrInfo info = usrMananger.getUsrInfoFromDataBase(mContext);
@@ -214,13 +216,17 @@ public class GoodsDetailActivity extends AppCompatActivity {
                     finish();
                     break;
                 case R.id.more:
-                    share2();
+                    share();
+                    mShareDialog.setVisibility(View.GONE);
                     break;
                 case R.id.share_remind_text:
                     mShareDialog.setVisibility(View.GONE);
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putBoolean(SHARE_STAE, false);
                     editor.apply();
+                    break;
+                case R.id.share_dialog:
+                    mShareDialog.setVisibility(View.GONE);
                     break;
                 default:
                     break;
@@ -229,16 +235,15 @@ public class GoodsDetailActivity extends AppCompatActivity {
     };
 
     private void share() {
-        UMImage thumb =  new UMImage(this, R.drawable.app_icon);
         UMWeb web = new UMWeb("http://39.97.180.130:8080/renren-fast/file/6fa93db4cdf140bb8bf23e2e1c0bce90.jpg");
         web.setTitle(mGoodInfo.getShareTitle());//标题
         web.setDescription(mGoodInfo.getShareDesc());//描述
-        web.setThumb(thumb);
         new ShareAction(GoodsDetailActivity.this)
                 .withMedia(web)
-                .setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.WEIXIN)
+                .setPlatform(SHARE_MEDIA.WEIXIN_CIRCLE)
                 .setCallback(shareListener)
-                .open();
+                .share();
+
     }
 
     private void share2() {
@@ -265,6 +270,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
          */
         @Override
         public void onResult(SHARE_MEDIA platform) {
+            isShareSuccess = true;
             Toast.makeText(GoodsDetailActivity.this, "成功了", Toast.LENGTH_LONG).show();
         }
 
@@ -276,6 +282,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
         @Override
         public void onError(SHARE_MEDIA platform, Throwable t) {
             Toast.makeText(GoodsDetailActivity.this, "失败" + t.getMessage(), Toast.LENGTH_LONG).show();
+            Log.i(TAG, "error : " + t.getMessage());
         }
 
         /**
@@ -326,5 +333,36 @@ public class GoodsDetailActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //QQ或者新浪分享
         UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+    }
+
+    class StepsAdapter extends BaseAdapter{
+        private TextView mStepText;
+        private ImageView mStepPic;
+
+        @Override
+        public int getCount() {
+            return mGoodInfo.getSteps().length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mGoodInfo.getSteps()[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.steps_list_item_layout, null);
+            mStepText = convertView.findViewById(R.id.step_text);
+            mStepPic = convertView.findViewById(R.id.step_pic);
+
+            mStepText.setText(mGoodInfo.getSteps()[position]);
+            Glide.with(mContext).load(mGoodInfo.getSteps()[position]).diskCacheStrategy(DiskCacheStrategy.NONE).into(mStepPic);
+            return convertView;
+        }
     }
 }

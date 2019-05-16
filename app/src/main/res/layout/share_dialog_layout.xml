@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/share_dialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#55000000"
     android:orientation="vertical"
-    android:id="@+id/share_dialog">
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/share_arrow"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:src="@drawable/share" />
+        android:src="@drawable/share2" />
 
     <TextView
         android:id="@+id/share_remind_text"
@@ -23,8 +24,8 @@
         android:layout_marginRight="90dp"
         android:background="@drawable/background_share"
         android:gravity="center"
-        android:text="aaaaaa"
+        android:text="点击右上角，分享至朋友圈"
         android:textColor="@color/goods_info_title_text_color"
-        android:textSize="@dimen/goods_main_text_size" />
+        android:textSize="14dp" />
 
 </RelativeLayout>

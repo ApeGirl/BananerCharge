@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.ape.bananarecharge.Datamodel.GoodsInfo;
 import com.ape.bananarecharge.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.IOException;
@@ -78,10 +80,7 @@ public class GridAdapter extends BaseAdapter {
 
         if (lists != null) {
             Uri uri = Uri.parse(lists.get(i).getPicUrl());
-//            Bitmap bitmap = getBitMap(lists.get(i).getPicUrl());
-//            Log.i(TAG, "bitmap : " + bitmap);
-            holder.goodsPicture.setImageURI(uri);
-//            holder.goodsPicture.setImageResource(R.drawable.home_grey);
+            Glide.with(mContext).load(uri).diskCacheStrategy(DiskCacheStrategy.NONE).into(holder.goodsPicture);
         }
         holder.goodsTitle.setText(lists.get(i).getTitle());
         Log.i(TAG, "title : " + lists.get(i).getTitle() + "   url : " + lists.get(i).getPicUrl());
@@ -90,7 +89,7 @@ public class GridAdapter extends BaseAdapter {
 
     class ViewHolder {
         public TextView goodsTitle;
-        public SimpleDraweeView goodsPicture;
+        public ImageView goodsPicture;
     }
 
 

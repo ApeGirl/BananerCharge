@@ -10,7 +10,7 @@ public class GoodsInfo implements Serializable {
     private String title;
     private String picUrl;
     private String indexPicUrl;
-    private String steps;
+    private String[] steps;
     private String stepsStr;
     private double price;
     private double shaPrice;
@@ -56,11 +56,11 @@ public class GoodsInfo implements Serializable {
         this.indexPicUrl = indexPicUrl;
     }
 
-    public String getSteps() {
+    public String[] getSteps() {
         return steps;
     }
 
-    public void setSteps(String steps) {
+    public void setSteps(String[] steps) {
         this.steps = steps;
     }
 

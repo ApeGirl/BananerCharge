@@ -57,6 +57,8 @@ public class PayActivity extends AppCompatActivity {
     private String mOrderId;
     private Map<String, String> mMap;
     private RelativeLayout mPayWait;
+    private RelativeLayout wechat_layout;
+    private RelativeLayout ali_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,8 @@ public class PayActivity extends AppCompatActivity {
         mWachatCheck = findViewById(R.id.wachat_buy);
         mAliCheck = findViewById(R.id.ali_buy);
         mPayWait = findViewById(R.id.pay_wait_layout);
+        wechat_layout = findViewById(R.id.wechat_layout);
+        ali_layout = findViewById(R.id.ali_layout);
 
         mBuyCount.setText(buyCounts);
         double price = (buyType == Utils.DIRECT_BUY) ? mGoodsInfo.getPrice() : mGoodsInfo.getShaPrice();
@@ -102,6 +106,8 @@ public class PayActivity extends AppCompatActivity {
         mAliCheck.setOnClickListener(onClickListener);
         mBuyBtn.setOnClickListener(onClickListener);
         mBack.setOnClickListener(onClickListener);
+        wechat_layout.setOnClickListener(onClickListener);
+        ali_layout.setOnClickListener(onClickListener);
 
         mReceiver = new MyReceiver();
     }
@@ -111,10 +117,12 @@ public class PayActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.wachat_buy:
+                case R.id.wechat_layout:
                     Utils.pay_type = Utils.WACHAT_PAY;
                     changePayState(mWachatCheck, Utils.pay_type );
                     break;
                 case R.id.ali_buy:
+                case R.id.ali_layout:
                     Utils.pay_type = Utils.Ali_PAY;
                     changePayState(mAliCheck, Utils.pay_type );
                     break;
@@ -136,6 +144,7 @@ public class PayActivity extends AppCompatActivity {
                 case R.id.back:
                     finish();
                     break;
+
                 default:
                     break;
             }

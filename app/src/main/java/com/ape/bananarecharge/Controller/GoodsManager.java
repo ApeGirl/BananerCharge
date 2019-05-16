@@ -223,7 +223,7 @@ public class GoodsManager {
             goodsInfo.setPicUrl(object.getString("pic"));
             goodsInfo.setGoddsid(object.getInt("goddsid"));
             goodsInfo.setIndexPicUrl(object.getString("indexPic"));
-            goodsInfo.setSteps(object.getString("steps"));
+
             goodsInfo.setStepsStr(object.getString("stepsStr"));
             goodsInfo.setPrice(object.getDouble("price"));
             goodsInfo.setShaPrice(object.getDouble("shaPrice"));

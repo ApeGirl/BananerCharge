@@ -120,6 +120,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/wechat_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/pay_cardview_margin_edge"
@@ -150,6 +151,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/ali_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/pay_cardview_margin_edge"

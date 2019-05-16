@@ -74,7 +74,6 @@
                         android:layout_marginLeft="20dp"
                         android:background="@null"
                         android:gravity="center_vertical"
-                        android:hint="@string/goods_info_edittext_hint"
                         android:textColor="@color/order_goods_sub_text_color"
                         android:textSize="@dimen/goods_sub_text_size" />
                 </LinearLayout>
@@ -183,138 +182,13 @@
                         android:textSize="@dimen/goods_sub_text_size" />
                 </LinearLayout>
 
-                <LinearLayout
+                <ListView
+                    android:id="@+id/steps_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="27dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="27dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/step_bg"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textColor="@color/goods_info_title_text_color"
-                        android:textSize="@dimen/goods_sub_text_size" />
-
-                    <TextView
-                        android:id="@+id/step1"
-                        style="@style/MainTextStlye"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/goods_info_step_text_margin_size"
-                        android:text="aaaaa" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/step_line_width"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/step_line_margintop"
-                        android:layout_marginLeft="@dimen/step_line_marginleft"
-                        android:layout_marginTop="@dimen/step_line_margintop"
-                        android:background="@drawable/step_line_background" />
-
-                    <ImageView
-                        android:id="@+id/step1_pic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/step_pic_margin"
-                        android:src="@drawable/duihuan" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="27dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/step_bg"
-                        android:gravity="center"
-                        android:text="2"
-                        android:textColor="@color/goods_info_title_text_color"
-                        android:textSize="@dimen/goods_sub_text_size" />
-
-                    <TextView
-                        android:id="@+id/step2"
-                        style="@style/MainTextStlye"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/goods_info_step_text_margin_size"
-                        android:text="aaaaa" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="@dimen/step_line_width"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/step_line_margintop"
-                        android:layout_marginLeft="@dimen/step_line_marginleft"
-                        android:layout_marginTop="@dimen/step_line_margintop"
-                        android:background="@drawable/step_line_background" />
-
-                    <ImageView
-                        android:id="@+id/step2_pic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/step_pic_margin" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="27dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/step_bg"
-                        android:gravity="center"
-                        android:text="3"
-                        android:textColor="@color/goods_info_title_text_color"
-                        android:textSize="@dimen/goods_sub_text_size" />
-
-                    <TextView
-                        android:id="@+id/step3"
-                        style="@style/MainTextStlye"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/goods_info_step_text_margin_size"
-                        android:text="aaaaa" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="6dp"
-                        android:src="@drawable/compelete_small" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/web_addr"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/step_pic_margin" />
-
-                </LinearLayout>
+                </ListView>
 
             </LinearLayout>
         </LinearLayout>
