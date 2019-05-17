@@ -341,12 +341,12 @@ public class GoodsDetailActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return mGoodInfo.getSteps().length;
+            return 0;
         }
 
         @Override
         public Object getItem(int position) {
-            return mGoodInfo.getSteps()[position];
+            return null;
         }
 
         @Override

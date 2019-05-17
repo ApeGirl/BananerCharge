@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ape.bananarecharge.Adapter.GridAdapter;
 import com.ape.bananarecharge.Controller.GoodsManager;
@@ -35,7 +37,7 @@ import java.util.List;
 import Util.URLUtils;
 import Util.Utils;
 
-public class HomePageFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class HomePageFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomePageFragment";
     private static final String GOODS_INFO = "goods_info";
     private static final String INFO_LIST = "info_list";
@@ -49,6 +51,7 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
     private RequestSuccessReceiver mReceiver;
     private LocalBroadcastManager mLocalBroadcastManager;
     private RelativeLayout mProgressBar;
+    private SwipeRefreshLayout mRefresh;
 
     @Nullable
     @Override
@@ -59,40 +62,7 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
 
         initView(view);
 
-        if (savedInstanceState != null) {
-            if (mIdArray.size()  == 0) {
-                mProgressBar.setVisibility(View.VISIBLE);
-            } else {
-                for (int i = 0; i < mIdArray.size(); i++) {
-                    String picUrl = "picurl" + mIdArray.get(i);
-                    String title = "title" + mIdArray.get(i);
-                    mGoodsList.get(i).setPicUrl(savedInstanceState.getString(picUrl));
-                    mGoodsList.get(i).setTitle(savedInstanceState.getString(title));
-                }
-            }
-        }
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
-        String str = sharedPreferences.getString(INFO_LIST, null);
-        mGoodsInfoList = (ArrayList<GoodsInfo>) Utils.String2Object(str);
-        if (mGoodsInfoList != null) {
-            mAdapter = new GridAdapter(mContext, mGoodsInfoList);
-            mGridView.setAdapter(mAdapter);
-        }
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mGoodsInfoList.size() != 0) {
-            for (int i = 0; i < mGoodsInfoList.size(); i++) {
-                String picUrl = "picurl" + mGoodsInfoList.get(i).getGoddsid();
-                String title = "title" + mGoodsInfoList.get(i).getGoddsid();
-                outState.putString(picUrl , mGoodsInfoList.get(i).getPicUrl());
-                outState.putString(title , mGoodsInfoList.get(i).getTitle());
-                mIdArray.add(i, mGoodsInfoList.get(i).getGoddsid());
-            }
-        }
     }
 
     private void initView(View view) {
@@ -102,14 +72,29 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
         mGridView = view.findViewById(R.id.home_page_grid);
         mGoodsManager = new GoodsManager(mContext);
         mProgressBar =view.findViewById(R.id.progress);
+        mRefresh = view.findViewById(R.id.refresh);
 
         mLocalBroadcastManager = LocalBroadcastManager.getInstance(mContext) ;
         IntentFilter intentFilter = new IntentFilter(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
         mReceiver = new RequestSuccessReceiver();
         mLocalBroadcastManager.registerReceiver( mReceiver , intentFilter );
-        mAdapter = new GridAdapter(mContext, mGoodsInfoList);
-        mGridView.setAdapter(mAdapter);
+
+//        mAdapter = new GridAdapter(mContext, mGoodsInfoList);
+//        mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
+        mRefresh.setOnRefreshListener(this);
+        mRefresh.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
+        String str = sharedPreferences.getString(INFO_LIST, null);
+        mGoodsInfoList = (ArrayList<GoodsInfo>) Utils.String2Object(str);
+        if (mGoodsInfoList != null) {
+            mAdapter = new GridAdapter(mContext, mGoodsInfoList);
+            mGridView.setAdapter(mAdapter);
+        }else {
+            Toast.makeText(mContext, "网络错误，请刷新重试", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -127,6 +112,16 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
         mContext.startActivity(intent);
     }
 
+    @Override
+    public void onRefresh() {
+        Log.i(TAG, "onRefresh");
+        initData();
+    }
+    private void initData() {
+        GoodsManager manager = new GoodsManager(mContext);
+        manager.doPostRequest(new HashMap<String, String>(), URLUtils.GOODS_LIST, URLUtils.RequestType.GOODS_LIST);
+    }
+
     class RequestSuccessReceiver extends BroadcastReceiver {
 
         @Override
@@ -135,13 +130,14 @@ public class HomePageFragment extends Fragment implements AdapterView.OnItemClic
             mGoodsInfoList = (ArrayList<GoodsInfo>) bundle.getSerializable("list");
             mAdapter = new GridAdapter(mContext, mGoodsInfoList);
             mGridView.setAdapter(mAdapter);
+            mRefresh.setRefreshing(false);
 
             SharedPreferences sharedPreferences = mContext.getSharedPreferences(GOODS_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(INFO_LIST, Utils.Object2String(mGoodsInfoList, TAG));
             editor.apply();
 
-            Log.i("GoodsManager", "mGoodsInfoList : " + mGoodsInfoList);
+            Log.i(TAG, "mGoodsInfoList : " + mGoodsInfoList);
             if (mGoodsInfoList != null) {
                 mProgressBar.setVisibility(View.GONE);
             }

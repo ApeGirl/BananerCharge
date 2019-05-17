@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.ape.bananarecharge"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -63,5 +63,7 @@ dependencies {
     implementation files('lib/utdid4all-1.1.5.3_proguard.jar')
     implementation files('lib/umeng-shareboard-widget-6.9.4.jar')
 
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'jp.wasabeef:glide-transformations:2.0.1'
+    implementation 'com.github.xiaweizi:RoundCornersView:v1.0'
 }

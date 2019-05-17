@@ -148,12 +148,12 @@ public class GoodsManager {
                 editor.putString(INFO_LIST, Utils.Object2String(mGoodsList, TAG));
                 editor.apply();
 
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("list", mGoodsList);
-//                Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
-//                intent.putExtras(bundle);
-//                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
-//                localBroadcastManager.sendBroadcast(intent);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("list", mGoodsList);
+                Intent intent = new Intent(URLUtils.ACTION_REQUEST_SUCCESS_RECEIVER);
+                intent.putExtras(bundle);
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+                localBroadcastManager.sendBroadcast(intent);
 
                 Log.i(TAG, "mGoodsList : " + mGoodsList);
                 break;

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.producers.DownsampleUtil;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;

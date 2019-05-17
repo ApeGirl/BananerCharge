@@ -50,4 +50,5 @@
     <dimen name="pay_cardview_margin_top_bottom">20dp</dimen>
     <dimen name="pay_type_text_margin_left">16dp</dimen>
 
+    <dimen name="sound_category_item_radius">10dp</dimen>
 </resources>
